@@ -1,9 +1,12 @@
+// Trabalho de POO - Maria Fernanda
+// Interface IUsuario
 interface IUsuario {
     nome: string;
     email: string;
     telefone: string;
 }
 
+// Interface ICorrida
 interface ICorrida {
     origem: string;
     destino: string;
@@ -11,6 +14,7 @@ interface ICorrida {
     toString(): string;
 }
 
+// Classe abstrata Usuario implementando a interface IUsuario
 abstract class Usuario implements IUsuario {
     protected _nome: string;
     protected _email: string;
@@ -26,6 +30,8 @@ abstract class Usuario implements IUsuario {
         this._telefone = telefone;
     }
 
+
+    // Métodos de validação de nome, email e telefone
     protected validarNome(nome: string): void {
         if (nome.length === 0) {
             throw new Error("O nome não pode ficar vazio");
@@ -53,6 +59,8 @@ abstract class Usuario implements IUsuario {
 
 }
 
+
+// Classe Motorista extendendo a classe Usuario
 class Motorista extends Usuario {
     private _cnh: string;
     private _tipoVeiculo: string;
@@ -66,12 +74,14 @@ class Motorista extends Usuario {
         this._totalCorridas = 0;
     }
 
+    // Validar CNH
     private validarCNH(cnh: string): void {
         if (cnh.length === 0) {
             throw new Error("CNH não pode ficar vazia");
         }
     }
 
+    // inicializar e finalizar corrida
     iniciarCorrida(): void {
         console.log(`Motorista ${this._nome} iniciou a corrida`);
     }
@@ -82,6 +92,8 @@ class Motorista extends Usuario {
     }
 }
 
+
+// Classe Passageiro extendendo a classe Usuario
 class Passageiro extends Usuario {
     private _formaPagamento: string;
 
@@ -90,11 +102,13 @@ class Passageiro extends Usuario {
         this._formaPagamento = formaPagamento;
     }
 
+    // Getter para receber a forma de pagamento
     get formaPagamento(): string {
         return this._formaPagamento;
     }
 }
 
+// Classe Corrida implementando a interface ICorrida
 class Corrida implements ICorrida {
     constructor(
         public origem: string,
@@ -108,6 +122,7 @@ class Corrida implements ICorrida {
         this.motorista = motorista;
     }
 
+    // Métodos de validação de origem, destino, passageiro e motorista
     private validarOrigem(origem: string): void {
         if (origem.length === 0) {
             throw new Error("Origem não pode ficar vazia");
@@ -132,23 +147,28 @@ class Corrida implements ICorrida {
         }
     }
 
+    // Método para calcular o preço da corrida
     calcularPreco(distancia: number): number {
         const precoPorKm = 2.5;
         return distancia * precoPorKm;
     }
 
+    // Método da interface ICorrida para retornar a corrida em string
     toString(): string {
         return `Origem: ${this.origem}, Destino: ${this.destino}, Passageiro: ${this.passageiro}, Motorista: ${this.motorista}`;
     }
 }
 
 class HistoricoCorridas {
+    // Array privado para armazenar as corridas
     private _corridas: Corrida[] = [];
 
+    // Adicionar corrida ao histórico
     adicionarCorrida(corrida: Corrida): void {
         this._corridas.push(corrida);
     }
 
+    // Listar todas as corridas
     listarCorridas(): void {
         if (this._corridas.length === 0) {
             console.log("Nenhuma corrida registrada.");
@@ -159,12 +179,14 @@ class HistoricoCorridas {
         }
     }
 
+    // Buscar corrida por origem
     buscarPorOrigem(origem: string): Corrida[] {
         return this._corridas.filter(corrida => 
             corrida.origem.toLowerCase().trim() === origem.toLowerCase().trim()
         );
     }
 
+    // Remover corrida por origem
     removerCorrida(origem: string): boolean {
         const tamanhoAntes = this._corridas.length;
         this._corridas = this._corridas.filter(corrida => 
@@ -175,11 +197,13 @@ class HistoricoCorridas {
 
 }
 
+// Instanciando a classe HistoricoCorridas para usar na main()
 const uber = new HistoricoCorridas();
 let motoristas: Motorista[] = [];
 let passageiros: Passageiro[] = [];
 
 
+// Função adicionar nova corrida, ligada com o metodo Corridas
 function adicionar() {
     console.log("Cadastrando nova corrida");
     const origem = prompt("Digite a origem da corrida: ") || "";
@@ -197,6 +221,7 @@ function adicionar() {
     }
 }
 
+// Função para pesquisar corrida por origem, ligada com o metodo Corridas
 function pesquisar() {
     const origem = prompt("Digite a origem da corrida que procura: ") || "";
     const corridas = uber.buscarPorOrigem(origem);
@@ -207,10 +232,12 @@ function pesquisar() {
     }
 }
 
+// Função para apagar corrida, ligada com o metodo Corridas
 function apagar() {
     const origem = prompt("Digite a origem da corrida para remover: ") || "";
     const corridas = uber.buscarPorOrigem(origem);
     
+    // Verifica se a corrida existe e se o usuário quer mesmo remover
     if (corridas.length > 0) {
         const resp = prompt(
             `Deseja realmente remover a corrida de ${origem}? (s/n): `
@@ -227,6 +254,7 @@ function apagar() {
     }
 }
 
+// Função para atualizar corrida, ligada com o metodo Corridas
 function atualizar() {
     const origem = prompt("Digite a origem da corrida para atualizar: ") || "";
     const corridas = uber.buscarPorOrigem(origem);
@@ -237,6 +265,7 @@ function atualizar() {
         const novoPassageiro = prompt("Novo passageiro: ") || "";
         const novoMotorista = prompt("Novo motorista: ") || "";
         
+        // Remove a corrida antiga e adiciona a nova
         try {
             const corridaAtualizada = new Corrida(novaOrigem, novoDestino, novoPassageiro, novoMotorista);
             uber.removerCorrida(origem);
@@ -250,6 +279,8 @@ function atualizar() {
     }
 }
 
+
+// Função para cadastrar motorista, ligada com o metodo Motorista
 function cadastrarMotorista() {
     const nomeMotorista = prompt("Nome do motorista: ") || "";
     const emailMotorista = prompt("Email do motorista: ") || "";
@@ -257,6 +288,7 @@ function cadastrarMotorista() {
     const cnhMotorista = prompt("CNH do motorista: ") || "";
     const tipoVeiculo = prompt("Tipo de veículo: ") || "";
 
+    // Cria uma nova instacia de Motorista e adiciona ao array de motoristas
     const motorista = new Motorista(
         nomeMotorista,
         emailMotorista,
@@ -268,12 +300,14 @@ function cadastrarMotorista() {
     console.log("Motorista cadastrado com sucesso!");
 }
 
+// Função para cadastrar passageiro, ligada com o metodo Passageiro
 function cadastrarPassageiro() {
     const nomePassageiro = prompt("Nome do passageiro: ") || "";
     const emailPassageiro = prompt("Email do passageiro: ") || "";
     const telefonePassageiro = prompt("Telefone do passageiro: ") || "";
     const formaPagamento = prompt("Forma de pagamento: ") || "";
 
+    // Cria uma nova instacia de Passageiro e adiciona ao array de passageiros
     const passageiro = new Passageiro(
         nomePassageiro,
         emailPassageiro,
@@ -284,6 +318,7 @@ function cadastrarPassageiro() {
     console.log("Passageiro cadastrado com sucesso!");
 }
 
+// Função para iniciar corrida, ligada com o metodo Motorista
 function iniciarCorrida() {
     const nomeMotoristaIniciar = prompt("Nome do motorista para iniciar a corrida: ") || "";
     let motoristaIniciar: Motorista | undefined;
@@ -301,7 +336,7 @@ function iniciarCorrida() {
     }
 }
 
-
+// Função para finalizar corrida, ligada com o metodo Motorista
 function finalizarCorrida() {
     const nomeMotoristaFinalizar = prompt("Nome do motorista para finalizar a corrida: ") || "";
     let motoristaFinalizar: Motorista | undefined;
@@ -319,6 +354,7 @@ function finalizarCorrida() {
     }
 }
 
+// Função para calcular preço da corrida
 function calcularPrecoCorrida() {
     const distancia = parseFloat(prompt("Distância da corrida (em km): ") || "0");
     if (isNaN(distancia) || distancia <= 0) {
@@ -330,6 +366,7 @@ function calcularPrecoCorrida() {
     console.log(`Preço da corrida: R$ ${preco.toFixed(2)}`);
 }
 
+// Função main para rodar o programa
 function main() {
     for (;;) {
         console.log("1 - Cadastrar Motorista");
@@ -397,6 +434,7 @@ function main() {
                     console.log("Opção inválida. Tente novamente.");
                     break;
             }
+        // Tratamento de erro
         } catch (error) {
             console.error("Erro:", (error as Error).message);
         }
