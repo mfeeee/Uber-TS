@@ -1,4 +1,4 @@
-Vou criar um enunciado para um Sistema do Uber, utilizando os conceitos de POO. Aqui está:
+ENUNCIADO PILOTO PARA CRIAÇÃO DA APLICAÇÃO
 
 Exercício: Sistema de Gerenciamento de Corridas Uber
 
